@@ -2,7 +2,6 @@ certifi==2017.7.27.1
 chardet==3.0.4
 coverage==4.4.1
 funcsigs==1.0.2
-hapy-heritrix===63aa22d
 idna==2.6
 Jinja2==2.9.6
 kafka-python==1.3.4
