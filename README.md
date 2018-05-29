@@ -99,3 +99,25 @@ Here's a quick script that builds, launches and unpauses a job using information
     h.launch_job(name)
     wait_for(h, name, 'unpause')
     h.unpause_job(name)
+
+## Command-line Interface
+
+### h3cc - Heritrix3 Crawl Controller
+
+Script to interact with Heritrix directly, to perform some general crawler operations.
+
+The ```info-xml``` command downloads the raw XML version of the job information page, which can the be filtered by other tools to extract information. For example, the Java heap status can be queried like this:
+
+    $ python agents/h3cc.py info-xml | xmlstarlet sel -t -v "//heapReport/usedBytes"
+
+Similarly, the number of novel URLs stored in the WARCs can be determined from:
+
+    $ python agents/h3cc.py info-xml | xmlstarlet sel -t -v "//warcNovelUrls"
+
+You can query the frontier too. To see the URL queue for a given host, use a query-url corresponding to that host, e.g.
+
+    $ python agents/h3cc.py -H 192.168.99.100 -q "http://www.bbc.co.uk/" -l 5 pending-urls-from
+
+This will show the first five URLs that are queued to be crawled next on that host. Similarly, you can ask for information about a specific URL:
+
+    $ python agents/h3cc.py -H 192.168.99.100 -q "http://www.bbc.co.uk/news" url-status
