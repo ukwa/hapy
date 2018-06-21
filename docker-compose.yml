@@ -1,7 +1,36 @@
-
-version: '2'
+version: "3"
 
 services:
 
-  h3cc:
+  # UKWA Heritrix
+  heritrix-worker:
+    image: ukwa/heritrix-worker
+    environment:
+      - "JAVA_OPTS=-Xmx2g"
+      - "CLAMD_HOST=clamd"
+      - "KAFKA_BOOTSTRAP_SERVERS=kafka:9092"
+      - "KAFKA_CRAWLED_TOPIC=frequent-crawl-log"
+      - "KAFKA_TOCRAWL_TOPIC=uris-to-crawl"
+      - "WRENDER_ENDPOINT=http://wrender:8010/render"
+      - "CDXSERVER_ENDPOINT=http://cdxserver:8080/fc"
+      - "JOB_NAME=frequent"
+      - "HERITRIX_USER=admin"
+      - "HERITRIX_PASSWORD=bl_uk"
+    volumes:
+      - /data/test/heritrix/output:/heritrix/output
+    hostname: tasks.heritrix-worker
+
+  #
+  hapy:
     build: .
+    #image: ukwa/hapy:latest
+    ports:
+      - 9119:9118
+    environment:
+      - "HERITRIX_USER=admin"
+      - "HERITRIX_PASSWORD=bl_uk"
+
+
+
+
+

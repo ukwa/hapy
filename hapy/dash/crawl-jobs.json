@@ -1,0 +1,16 @@
+[
+  {
+    "id": "daily",
+    "job_name": "daily",
+    "deployment": "frequent",
+    "function": "ingest",
+    "url": "https://crawler03.bl.uk:8443/"
+  },
+  {
+    "id": "frequent",
+    "job_name": "frequent",
+    "deployment": "frequent",
+    "function": "ingest",
+    "dns_sd_name": "heritrix-worker"
+  }
+]
