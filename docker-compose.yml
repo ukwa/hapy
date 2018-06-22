@@ -20,7 +20,6 @@ services:
       - "KAFKA_TOCRAWL_TOPIC=uris-to-crawl"
       - "WRENDER_ENDPOINT=http://wrender:8010/render"
       - "CDXSERVER_ENDPOINT=http://cdxserver:8080/fc"
-    hostname: tasks.heritrix-worker
 
   # Hapy Dashboard
   hapy:

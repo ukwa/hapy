@@ -108,6 +108,8 @@ class Heritrix3Collector(object):
         # Merge the results in:
         for job in services:
             job['state'] = results[job['id']]
+            if not job['url']:
+                job['state']['status'] = "LOOKUP FAILED"
 
         return services
 
@@ -287,14 +289,15 @@ def get_h3_status(args):
             if not state['status']:
                 state['status'] = info['job'].get("statusDescription", None)
             state['status'] = state['status'].upper()
-            # Also look to store useful numbers as actual numbers:
-            dict_values_to_floats(info['job'], 'loadReport')
-            dict_values_to_floats(info['job'], 'heapReport')
-            dict_values_to_floats(info['job'], 'rateReport')
-            dict_values_to_floats(info['job'], 'threadReport', ['steps','processors'])
-            dict_values_to_floats(info['job'], 'sizeTotalsReport')
-            dict_values_to_floats(info['job'], 'uriTotalsReport')
-            dict_values_to_floats(info['job'], 'frontierReport', ['lastReachedState'])
+            if state['status'] != "UNBUILT":
+                # Also look to store useful numbers as actual numbers:
+                dict_values_to_floats(info['job'], 'loadReport')
+                dict_values_to_floats(info['job'], 'heapReport')
+                dict_values_to_floats(info['job'], 'rateReport')
+                dict_values_to_floats(info['job'], 'threadReport', ['steps','processors'])
+                dict_values_to_floats(info['job'], 'sizeTotalsReport')
+                dict_values_to_floats(info['job'], 'uriTotalsReport')
+                dict_values_to_floats(info['job'], 'frontierReport', ['lastReachedState'])
     except Exception as e:
         state['status'] = "DOWN"
         state['error'] = "Exception while checking Heritrix! %s" % e
