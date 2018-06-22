@@ -63,6 +63,7 @@ class Heritrix3Collector(object):
                 # Look up service IP addresses via DNS:
                 (hostname, alias, ipaddrlist) = socket.gethostbyname_ex(dns_name)
                 for ip in ipaddrlist:
+                    logger.info("For %s got (%s,%s,%s)" % (dns_name, hostname, alias, ipaddrlist))
                     # Make a copy of the dict to put the values in:
                     dns_job = dict(job)
                     # Default to using the IP address:
@@ -94,6 +95,7 @@ class Heritrix3Collector(object):
         # Parallel check for H3 job status:
         argsv = []
         for job in services:
+            logger.info("Looking up %s" % job)
             server_url = job['url']
             server_user = os.getenv('HERITRIX_USERNAME', "admin")
             server_pass = os.getenv('HERITRIX_PASSWORD', "heritrix")
