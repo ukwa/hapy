@@ -25,7 +25,7 @@ setup(
     author = 'William Mayor, Andrew Jackson',
     author_email = 'w.mayor@ucl.ac.uk, andrew.jackson@bl.uk',
     url = 'https://github.com/ukwa/hapy',
-    udownload_urlrl = 'https://github.com/ukwa/hapy',
+    download_url = 'https://github.com/ukwa/hapy',
     keywords = ['heritrix'],
     classifiers = [
         'Intended Audience :: Developers',

@@ -24,6 +24,9 @@ logger = logging.getLogger(__name__)
 TIMEOUT = 10
 socket.setdefaulttimeout(TIMEOUT)
 
+# Config file:
+CRAWL_JOBS_FILE = os.environ.get("CRAWL_JOBS_FILE", 'crawl-jobs.json')
+
 
 class Heritrix3Collector(object):
 
@@ -41,7 +44,7 @@ class Heritrix3Collector(object):
 
     def lookup_services(self):
         # Load the config file:
-        service_list = self.load_as_json(os.path.join(os.path.dirname(__file__), 'crawl-jobs.json'))
+        service_list = self.load_as_json(os.path.join(os.path.dirname(__file__), CRAWL_JOBS_FILE))
 
         # Find the services. If there are any DNS Service Discovery entries, filter them out.
         services = []
@@ -295,7 +298,7 @@ def get_h3_status(args):
     except Exception as e:
         state['status'] = "DOWN"
         state['error'] = "Exception while checking Heritrix! %s" % e
-        # app.logger.exception(e)
+        logger.exception(e)
 
     return job_id, state
 

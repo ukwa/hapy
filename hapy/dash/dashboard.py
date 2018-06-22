@@ -1,10 +1,13 @@
+import os
 import json
+from hapy import hapy
 from hapy.dash.collector import Heritrix3Collector
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, REGISTRY
 from flask import Flask
-from flask import render_template, redirect, url_for, request, Response, send_file, abort
+from flask import render_template, redirect, url_for, flash
 app = Flask(__name__)
-
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SECRET_KEY'] = os.environ.get('APP_SECRET', 'dev-mode-key')
 
 @app.route('/')
 def status():
@@ -25,34 +28,41 @@ def prometheus_metrics():
 
     headers = {'Content-Type': CONTENT_TYPE_LATEST}
     return generate_latest(REGISTRY), 200, headers
-#
-
-@app.route('/control/dc/pause')
-def pause_dc():
-    servers = json.load(systems().servers)
-    services = json.load(systems().services)
-    for job in ['dc0-2016', 'dc1-2016', 'dc2-2016', 'dc3-2016']:
-        server = servers[services['jobs'][job]['server']]
-        h = hapyx.HapyX(server['url'], username=server['user'], password=server['pass'])
-        h.pause_job(services['jobs'][job]['name'])
-    return redirect(url_for('status'))
 
 
-@app.route('/control/dc/unpause')
-def unpause_dc():
-    servers = json.load(systems().servers)
-    services = json.load(systems().services)
-    for job in ['dc0-2016', 'dc1-2016', 'dc2-2016', 'dc3-2016']:
-        server = servers[services['jobs'][job]['server']]
-        h = hapyx.HapyX(server['url'], username=server['user'], password=server['pass'])
-        h.unpause_job(services['jobs'][job]['name'])
-    return redirect(url_for('status'))
+@app.route('/control/all/<action>')
+def control_all(action=None):
+    try:
+        c = Heritrix3Collector()
+        services = c.lookup_services()
 
+        for s in services:
+            server_user = os.getenv('HERITRIX_USERNAME', "heritrix")
+            server_pass = os.getenv('HERITRIX_PASSWORD', "test")
+            h = hapy.Hapy(s['url'], username=server_user, password=server_pass)
+            if action == 'pause':
+                app.logger.info("Requesting pause of job %s on server %s." % (s['job_name'], s['url']))
+                h.pause_job(s['job_name'])
+                flash("Requested pause of job %s on server %s." % (s['job_name'], s['url']))
+            elif action == 'unpause':
+                app.logger.info("Requesting unpause of job %s on server %s." % (s['job_name'], s['url']))
+                h.unpause_job(s['job_name'])
+                flash("Requested unpause of job %s on server %s." % (s['job_name'], s['url']))
+            elif action == 'launch':
+                app.logger.info("Requesting launch of job %s on server %s." % (s['job_name'], s['url']))
+                h.launch_job(s['job_name'])
+                flash("Requested launch of job %s on server %s." % (s['job_name'], s['url']))
+            elif action == 'terminate':
+                app.logger.info("Requesting termination of job %s on server %s." % (s['job_name'], s['url']))
+                h.terminate_job(s['job_name'])
+                flash("Requested termination of job %s on server %s." % (s['job_name'], s['url']))
+            else:
+                app.logger.warning("Unrecognised crawler action! '%s'" % action)
+                flash("Unrecognised crawler action! '%s'" % action)
 
-@app.route('/stop/<frequency>')
-def stop(frequency=None):
-    if frequency:
-        crawl.tasks.stop_start_job(frequency,restart=False)
+    except Exception as e:
+        flash("Something went wrong!\n%s" % e)
+
     return redirect(url_for('status'))
 
 
