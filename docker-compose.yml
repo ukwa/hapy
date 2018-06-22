@@ -14,10 +14,8 @@ services:
       - "WRENDER_ENDPOINT=http://wrender:8010/render"
       - "CDXSERVER_ENDPOINT=http://cdxserver:8080/fc"
       - "JOB_NAME=frequent"
-      - "HERITRIX_USER=admin"
-      - "HERITRIX_PASSWORD=bl_uk"
-    volumes:
-      - /data/test/heritrix/output:/heritrix/output
+      - "HERITRIX_USER=heritrix"
+      - "HERITRIX_PASSWORD=test"
     hostname: tasks.heritrix-worker
 
   #
@@ -25,10 +23,10 @@ services:
     build: .
     #image: ukwa/hapy:latest
     ports:
-      - 9119:9118
+      - 8000:8000
     environment:
-      - "HERITRIX_USER=admin"
-      - "HERITRIX_PASSWORD=bl_uk"
+      - "HERITRIX_USER=heritrix"
+      - "HERITRIX_PASSWORD=test"
 
 
 

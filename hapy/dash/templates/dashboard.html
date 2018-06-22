@@ -44,7 +44,6 @@
                 <tr><th>Crawl Type</th><th>Crawl Job</th><th>Status</th></tr>
             </thead>
             <tbody>
-{{ crawls }}
 {% for crawl in crawls %}
 <tr>
     <td>{{ crawl['deployment'] }}</td>
@@ -57,8 +56,8 @@
 
         <h1>Operations</h1>
         <p>
-            <a class="pure-button pure-button-primary" href="{{ url_for('pause_dc')}}" title="PAUSE ALL DOMAIN CRAWL JOBS!"><i class="fa fa-pause-circle" aria-hidden="true"></i></a>
-            <a class="pure-button pure-button-primary" href="{{ url_for('unpause_dc')}}" title="UNPAUSE ALL DOMAIN CRAWL JOBS!"><i class="fa fa-play-circle" aria-hidden="true"></i></a>
+            <a class="pure-button pure-button-primary" href="{{ url_for('pause_dc')}}" title="PAUSE ALL DOMAIN CRAWL JOBS!">PAUSE <i class="fa fa-pause-circle" aria-hidden="true"></i></a>
+            <a class="pure-button pure-button-primary" href="{{ url_for('unpause_dc')}}" title="UNPAUSE ALL DOMAIN CRAWL JOBS!">UNPAUSE <i class="fa fa-play-circle" aria-hidden="true"></i></a>
         </p>
 
 

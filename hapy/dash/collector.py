@@ -109,6 +109,19 @@ class Heritrix3Collector(object):
         return services
 
     def collect(self):
+        for m in self._collect():
+            filtered = []
+            for s in m.samples:
+                name, labels, value = s
+                if not isinstance(value, float):
+                    logger.warning("This sample is not a float! %s, %s, %s" % (name, labels, value))
+                else:
+                    filtered.append(s)
+                m.samples = filtered
+            yield m
+
+    def _collect(self):
+        # type: () -> Generator[GaugeMetricFamily]
 
         m_uri_down = GaugeMetricFamily(
             'heritrix3_crawl_job_uris_downloaded_total',
@@ -204,10 +217,12 @@ class Heritrix3Collector(object):
                           ji.get('loadReport', {}).get('totalThreads', 0.0))
                 m_ts.add_metric([name, deployment, id, 'busy'],
                           ji.get('loadReport', {}).get('busyThreads', 0.0))
-                m_ts.add_metric([name, deployment, id, 'congestion-ratio'],
-                          ji.get('loadReport', {}).get('congestionRatio', 0.0))
                 m_ts.add_metric([name, deployment, id, 'toe-count'],
                           ji.get('threadReport', {}).get('toeCount', 0.0))
+                # Congestion ratio can be literal 'null':
+                congestion = ji.get('loadReport', {}).get('congestionRatio', 0.0)
+                if congestion is not None:
+                    m_ts.add_metric([name, deployment, id, 'congestion-ratio'], congestion)
                 # Thread Steps (could be an array or just one entry):
                 steps = ji.get('threadReport', {}).get('steps', {}).get('value',[])
                 if isinstance(steps, basestring):
