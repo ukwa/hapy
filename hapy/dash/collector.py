@@ -253,9 +253,9 @@ class Heritrix3Collector(object):
                     else:
                         logger.warning("Could not handle processor value: '%s'" % proc_value)
 
-            except (KeyError, TypeError, ValueError) as e:
+            except Exception as e:
                 logger.exception("Exception while parsing metrics!")
-                logger.info("Printing raw JSON in case there's an underlying issue: %s" % json.dumps(job)[:1024])
+                logger.info("Printing raw JSON in case there's an underlying issue: %s" % json.dumps(job, indent=2))
 
         # And return the metrics:
         yield m_uri_down
