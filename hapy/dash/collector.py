@@ -229,29 +229,33 @@ class Heritrix3Collector(object):
                 if congestion is not None:
                     m_ts.add_metric([name, deployment, id, 'congestion-ratio'], congestion)
                 # Thread Steps (could be an array or just one entry):
-                steps = ji.get('threadReport', {}).get('steps', {}).get('value',[])
-                if isinstance(steps, basestring):
-                    steps = [steps]
-                for step_value in steps:
-                    splut = re.split(' ', step_value, maxsplit=1)
-                    if len(splut) == 2:
-                        count, step = splut
-                        step = "step-%s" % step.lower()
-                        m_ts.add_metric([name, deployment, id, step], float(int(count)))
-                    else:
-                        logger.warning("Could not handle step value: %s" % step_value)
+                steps = ji.get('threadReport', {}).get('steps', {})
+                if steps is not None:
+                    steps = steps.get('value',[])
+                    if isinstance(steps, basestring):
+                        steps = [steps]
+                    for step_value in steps:
+                        splut = re.split(' ', step_value, maxsplit=1)
+                        if len(splut) == 2:
+                            count, step = splut
+                            step = "step-%s" % step.lower()
+                            m_ts.add_metric([name, deployment, id, step], float(int(count)))
+                        else:
+                            logger.warning("Could not handle step value: %s" % step_value)
                 # Thread Processors (could be an array or just one entry):
-                procs = ji.get('threadReport', {}).get('processors', {}).get('value', [])
-                if isinstance(procs, basestring):
-                    procs = [procs]
-                for proc_value in procs:
-                    splut = re.split(' ', proc_value, maxsplit=1)
-                    if len(splut) == 2:
-                        count, proc = splut
-                        proc = "processor-%s" % proc.lower()
-                        m_ts.add_metric([name, deployment, id, proc], float(count))
-                    else:
-                        logger.warning("Could not handle processor value: '%s'" % proc_value)
+                procs = ji.get('threadReport', {}).get('processors', {})
+                if procs is not None:
+                    procs = procs.get('value',[])
+                    if isinstance(procs, basestring):
+                        procs = [procs]
+                    for proc_value in procs:
+                        splut = re.split(' ', proc_value, maxsplit=1)
+                        if len(splut) == 2:
+                            count, proc = splut
+                            proc = "processor-%s" % proc.lower()
+                            m_ts.add_metric([name, deployment, id, proc], float(count))
+                        else:
+                            logger.warning("Could not handle processor value: '%s'" % proc_value)
 
             except Exception as e:
                 logger.exception("Exception while parsing metrics!")
