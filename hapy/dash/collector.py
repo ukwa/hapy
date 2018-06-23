@@ -175,8 +175,11 @@ class Heritrix3Collector(object):
             try:
                 # URIs:
                 ji = state.get('details',{}).get('job',{})
-                docs_total = ji.get('uriTotalsReport',{}).get('downloadedUriCount', 0.0)
-                known_total = ji.get('uriTotalsReport',{}).get('totalUriCount', 0.0)
+                utr = ji.get('uriTotalsReport',{})
+                if utr is None:
+                    utr = {}
+                docs_total = utr.get('downloadedUriCount', 0.0)
+                known_total = utr.get('totalUriCount', 0.0)
                 m_uri_down.add_metric([name, deployment, status, id], docs_total)
                 m_uri_known.add_metric([name, deployment, status, id], known_total)
                 # New-style metrics:

@@ -9,9 +9,6 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SECRET_KEY'] = os.environ.get('APP_SECRET', 'dev-mode-key')
 
-# Set up registry for Prometheus metrics:
-REGISTRY.register(Heritrix3Collector())
-
 
 @app.route('/')
 def status():
@@ -28,9 +25,11 @@ def status():
 
 @app.route('/metrics')
 def prometheus_metrics():
+    # Set up registry for Prometheus metrics:
+    #REGISTRY.register(Heritrix3Collector())
 
     headers = {'Content-Type': CONTENT_TYPE_LATEST}
-    return generate_latest(REGISTRY), 200, headers
+    return generate_latest(Heritrix3Collector()), 200, headers
 
 
 @app.route('/control/all/<action>')
