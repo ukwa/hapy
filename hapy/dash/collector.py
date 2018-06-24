@@ -103,6 +103,9 @@ class Heritrix3Collector(object):
             argsv.append((job['id'], job['job_name'], server_url, server_user, server_pass))
         # Wait for all...
         result_list = self.pool.map(get_h3_status, argsv)
+        self.pool.terminate()
+        self.pool.join()
+        # Collect:
         results = {}
         for job, status in result_list:
             results[job] = status
