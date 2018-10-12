@@ -304,7 +304,11 @@ class Hapy:
             self.launch_job(job)
         else:
             # Select the most recent checkpoint:
-            checkpoint = checkpoints[0]
+            if isinstance(checkpoints, list):
+                checkpoint = checkpoints[0]
+            else:
+                # H3 doesn't return an array if there is only one checkpoint!
+                checkpoint = checkpoints
             logger.info("Launching from checkpoint %s..." %  checkpoint)
             # And launch:
             self._http_post(
