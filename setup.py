@@ -1,26 +1,23 @@
 import subprocess
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup, find_packages
 
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
 def get_version():
     try:
-        return subprocess.check_output(['git', 'describe', '--tags', '--always']).strip()
+        return subprocess.check_output(['git', 'describe', '--tags', '--always']).strip().decode("utf-8")
     except:
         return "?.?.?"
 
-
 setup(
     name = 'hapy-heritrix',
-    packages = ['hapy'],
+    packages=find_packages(),
     version=get_version(),
     install_requires=requirements,
     include_package_data=True,
     description = 'A Python wrapper around the Heritrix v3 API',
+    long_description=open('README.md').read(),
     license = open('LICENSE').read(),
     author = 'William Mayor, Andrew Jackson',
     author_email = 'w.mayor@ucl.ac.uk, andrew.jackson@bl.uk',
@@ -36,7 +33,7 @@ setup(
         ],
     entry_points={
         'console_scripts': [
-            'h3cc=hapy.h3cc:main',
+            'h3cc=hapy.h3cc:main'
         ]
     }
 )
