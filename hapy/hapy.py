@@ -219,7 +219,7 @@ class Hapy:
         D = {}
         for child in tree:
             d = self.__tree_to_dict(child)
-            tag = d.keys()[0]
+            tag = next(iter(d))
             try:
                 try:
                     D[tag].append(d[tag])

@@ -97,7 +97,7 @@ USAGE
     try:
         # Setup argument parser
         parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
-        parser.add_argument("-v", "--verbose", dest="verbose", action="count", help="set verbosity level [default: %(default)s]")
+        parser.add_argument("-v", "--verbose", dest="verbose", action="count", help="set verbosity level [default: %(default)s]", default=0)
         parser.add_argument('-V', '--version', action='version', version=program_version_message)
         parser.add_argument('-j', '--job', dest='job', default='frequent',
                             help="Name of job to operate upon. [default: %(default)s]")

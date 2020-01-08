@@ -15,7 +15,9 @@ setup(
     packages=find_packages(),
     version=get_version(),
     install_requires=requirements,
-    include_package_data=True,
+    package_data = {
+        '': ['*.groovy']
+    },
     description = 'A Python wrapper around the Heritrix v3 API',
     long_description=open('README.md').read(),
     license = open('LICENSE').read(),
