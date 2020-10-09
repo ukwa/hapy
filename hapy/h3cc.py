@@ -166,7 +166,7 @@ USAGE
             print(json.dumps(ha.get_job_info(job), indent=4))
         elif command == "job-cxml":
             print(ha.get_job_configuration(job))
-        elif command in ["surt-scope", "show-decide-rules", "show-metadata", "kill-all-toethreads"]:
+        elif command in ["surt-scope", "show-decide-rules", "show-all-sheets", "show-metadata", "kill-all-toethreads"]:
             template = env.get_template('%s.groovy' % command)
             r = ha.execute_script(engine="groovy", script=template.render(), name=job)
             print(r[0])
