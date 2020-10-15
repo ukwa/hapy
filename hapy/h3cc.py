@@ -62,6 +62,12 @@ logger.setLevel( logging.INFO )
 
 
 #
+# Heritrix scripts, by parameters needed: 
+#
+H3_SCRIPTS_JOB = ["kill-all-toethreads", "pending-urls", "show-all-sheets", "show-decide-rules", "show-metadata", "surt-scope"]
+H3_SCRIPTS_JOB_URL = ["pending-urls-from", "url-status"]
+
+#
 def main(argv=None):
     """
         h3cc
@@ -115,7 +121,9 @@ USAGE
                             help="URL to use for queries [default: %(default)s]")
         parser.add_argument('-l' '--query-limit', dest='query_limit', type=int, default=10,
                             help="Maximum number of results to return from queries [default: %(default)s]")
-        parser.add_argument(dest="command", help="Command to carry out, 'list-jobs', 'status', 'job-status', 'job-info', 'job-info-json', job-cxml', 'surt-scope', 'pending-urls', 'pending-urls-from', 'show-all-sheets', 'show-decide-rules', 'show-metadata', 'kill-all-toethreads'. [default: %(default)s]", metavar="command")
+        parser.add_argument(dest="command", 
+                            help="Command to carry out. One of: " + ", ".join(H3_SCRIPTS_JOB + H3_SCRIPTS_JOB_URL) + ". [default: %(default)s]",
+                            metavar="command")
 
         # Process arguments
         args = parser.parse_args()
@@ -166,13 +174,15 @@ USAGE
             print(json.dumps(ha.get_job_info(job), indent=4))
         elif command == "job-cxml":
             print(ha.get_job_configuration(job))
-        elif command in ["surt-scope", "show-decide-rules", "show-all-sheets", "show-metadata", "kill-all-toethreads"]:
+        elif command in H3_SCRIPTS_JOB:
             template = env.get_template('%s.groovy' % command)
-            r = ha.execute_script(engine="groovy", script=template.render(), name=job)
+            r = ha.execute_script(engine="groovy", 
+                script=template.render(), name=job)
             print(r[0])
-        elif command in ["pending-urls", "pending-urls-from", "url-status"]:
+        elif command in H3_SCRIPTS_JOB_URL:
             template = env.get_template('%s.groovy' % command)
-            r = ha.execute_script(engine="groovy", script=template.render({ "url": args.query_url ,"limit": args.query_limit }), name=job)
+            r = ha.execute_script(engine="groovy", 
+                script=template.render({ "url": args.query_url ,"limit": args.query_limit }), name=job)
             print(r[0])
         else:
             logger.error("Can't understand command '%s'" % command)
