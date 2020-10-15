@@ -27,9 +27,9 @@ import hapy
 import json
 
 # Prevent cert warnings
+# See also https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
 import requests.packages.urllib3
-
-#requests.packages.urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
@@ -115,7 +115,7 @@ USAGE
                             help="URL to use for queries [default: %(default)s]")
         parser.add_argument('-l' '--query-limit', dest='query_limit', type=int, default=10,
                             help="Maximum number of results to return from queries [default: %(default)s]")
-        parser.add_argument(dest="command", help="Command to carry out, 'list-jobs', 'status', 'job-status', 'job-info', 'job-info-json', job-cxml', 'surt-scope', 'pending-urls', 'show-metadata', 'show-decide-rules', 'kill-all-toethreads'. [default: %(default)s]", metavar="command")
+        parser.add_argument(dest="command", help="Command to carry out, 'list-jobs', 'status', 'job-status', 'job-info', 'job-info-json', job-cxml', 'surt-scope', 'pending-urls', 'pending-urls-from', 'show-all-sheets', 'show-decide-rules', 'show-metadata', 'kill-all-toethreads'. [default: %(default)s]", metavar="command")
 
         # Process arguments
         args = parser.parse_args()
